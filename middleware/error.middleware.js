@@ -1,4 +1,4 @@
-const { ErrorHandler, ValidationError, NotFoundError, AuthenticationError, AuthorizationError } = require('./ErrorHandler');
+const { ErrorHandler, ValidationError, NotFoundError, AuthenticationError, AuthorizationError } = require('../utils/ErrorHandler');
 
 /**
  * Centralized error handling middleware

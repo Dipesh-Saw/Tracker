@@ -9,7 +9,13 @@ const connectDatabase = async () => {
 
     try {
         await mongoose.connect(MONGO_URI);
-        console.log('MongoDB Connected:', MONGO_URI);
+        if (MONGO_URI == "mongodb://localhost:27017/docTracker") {
+            console.log('Local MongoDB Connected');
+        }
+        else {
+            console.log('Cloud MongoDB Connected');
+        }
+
     } catch (err) {
         console.error('MongoDB Connection Error:', err);
         console.log('Retrying connection in 5 seconds...');
