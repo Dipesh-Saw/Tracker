@@ -15,7 +15,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 console.log(process.env.MONGO_URI);
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/docTracker";
+const MONGO_URI =
+  process.env.MONGO_URI || "mongodb://localhost:27017/docTracker";
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,7 +26,7 @@ app.set("view engine", "ejs");
 
 // Database Connection
 mongoose
-  .connect(MONGO_URI, { tls: false, tlsAllowInvalidCertificates: false })
+  .connect(MONGO_URI)
   .then(() => console.log("MongoDB Connected", MONGO_URI))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
@@ -37,7 +38,7 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: MONGO_URI }),
     cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
-  }),
+  })
 );
 
 // Auth Middleware
