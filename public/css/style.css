@@ -1,0 +1,347 @@
+:root {
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #ffffff;
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --input-focus: rgba(255, 255, 255, 0.25);
+    --primary-btn: #4facfe;
+    --primary-btn-hover: #00f2fe;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.auth-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+/* Glassmorphism Cards */
+.glass-card, .glass-panel, .glass, .navbar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-radius: 16px;
+}
+
+/* Auth Styles */
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.auth-card {
+    padding: 40px;
+    text-align: center;
+}
+
+.auth-card h2 {
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.subtitle {
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: var(--input-bg);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+.input-group::placeholder{
+    color: white;
+}
+
+input:focus, select:focus {
+    background: var(--input-focus);
+    border-color: rgba(255,255,255,0.5);
+}
+
+select option {
+    background: #333; /* Dark background for dropdowns */
+    color: white;
+}
+
+.btn-primary, .btn-submit, .btn-secondary {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary, .btn-submit {
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    margin-top: 10px;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.btn-primary:active, .btn-submit:active {
+    transform: scale(0.98);
+}
+
+.auth-redirect {
+    margin-top: 20px;
+    font-size: 0.9rem;
+}
+
+.auth-redirect a, .form-footer a {
+    color: #00f2fe;
+    text-decoration: none;
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.alert.error {
+    background: rgba(255, 99, 71, 0.2);
+    border: 1px solid rgba(255, 99, 71, 0.5);
+    color: #ffcccb;
+}
+
+/* Dashboard & Form Layout */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    margin: 20px;
+    border-radius: 12px;
+}
+
+.brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.user-menu span {
+    margin-right: 15px;
+}
+
+.btn-logout {
+    padding: 8px 16px;
+    background: rgba(255, 99, 71, 0.2);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.btn-logout:hover {
+    background: rgba(255, 99, 71, 0.4);
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    padding: 0 20px 20px 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.glass-panel {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+.row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.meta-row .input-group {
+    flex: 1;
+}
+
+.readonly-input {
+    background: rgba(0,0,0,0.2);
+    cursor: default;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: var(--glass-border);
+    margin: 20px 0;
+}
+
+#entriesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.entry-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    background: rgba(0,0,0,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    transition: background 0.3s;
+}
+
+.entry-row:hover {
+    background: rgba(0,0,0,0.15);
+}
+
+.entry-row .input-group {
+    flex: 1;
+}
+
+.entry-row .input-group label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.7);
+}
+
+.btn-remove {
+    background: rgba(255, 100, 100, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 100, 100, 0.3);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-bottom: 3px;
+}
+
+.btn-remove:hover {
+    background: rgba(255, 100, 100, 0.4);
+}
+
+.actions-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 20px;
+}
+
+/* Dashboard Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.7);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #00f2fe;
+}
+
+.recent-activity h4 {
+    margin-bottom: 15px;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.activity-list {
+    list-style: none;
+}
+
+.activity-list li {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.activity-list li:last-child {
+    border-bottom: none;
+}
+
+/* Respnsive */
+@media (max-width: 1000px) {
+    .main-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .entry-row {
+        flex-wrap: wrap;
+    }
+    
+    .entry-row .input-group {
+        min-width: 120px;
+    }
+}

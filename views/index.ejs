@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - DocTracker</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar glass">
+      <div class="brand">Productivity Tracker</div>
+      <div class="user-menu">
+        <span>Welcome, <strong> <%= user.username %> </strong></span>
+        <a href="/auth/logout" class="btn-logout">Logout</a>
+      </div>
+    </nav>
+
+    <div class="main-container">
+      <!-- LEFT PANEL: FORM -->
+      <div class="form-section glass-panel">
+        <div class="panel-header">
+          <h3>Daily Log Entry</h3>
+        </div>
+
+        <form id="trackerForm">
+          <!-- ROW 1: Meta Data -->
+          <div class="row meta-row">
+            <div class="input-group">
+              <label>Username</label>
+              <input type="text" class="readonly-input" value="<%= user.username %>" readonly/>
+              <input type="hidden" name="username" value="<%= user.username %>">
+            </div>
+            <div class="input-group">
+              <label>Date</label>
+              <input type="date" name="date" required id="dateInput" />
+            </div>
+            <div class="input-group">
+              <label>Day Type</label>
+              <select name="dayType" required>
+                <option value="Full Day">Full Day</option>
+                <option value="Half Day">Half Day</option>
+              </select>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <!-- ROW 2+: Dynamic Entries -->
+          <div id="entriesContainer">
+            <!-- Initial Row -->
+            <div class="entry-row">
+              <div class="input-group">
+                <label>Platform</label>
+                <select name="platform" class="platform-select">
+                  <option value="" disabled selected>Select</option>
+                  <% Objects.platforms.forEach(function(p) { %>
+                  <option value="<%= p %>"><%= p %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Queue</label>
+                <select
+                  name="queue"
+                  class="queue-select"
+                  onchange="loadDocTypes(this)"
+                >
+                  <option value="" disabled selected>Select</option>
+                  <% Objects.Queue.forEach(function(q) { %>
+                  <option value="<%= q %>"><%= q %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Document Type</label>
+                <select name="doctype" class="doctype-select" id="doctypes">
+                  <option value="" disabled selected>Select</option>
+                  <% Objects.documentType.Queue1.forEach(function(q) { %>
+                  <option value="<%= q %>"><%= q %></option>
+                  <% }); %>
+                </select>
+              </div>
+              <div class="input-group">
+                <label>Count</label>
+                <input
+                  type="number"
+                  name="count"
+                  class="count-input"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+              <div class="input-group">
+                <label>Time (mins)</label>
+                <input
+                  type="number"
+                  name="timeInMins"
+                  class="time-input"
+                  min="0"
+                  placeholder="0"
+                />
+              </div>
+              <button
+                type="button"
+                class="btn-remove"
+                style="visibility: hidden"
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+
+          <div class="actions-row">
+            <button type="button" id="addRowBtn" class="btn-secondary">
+              + Add Row
+            </button>
+            <button type="submit" class="btn-submit">Submit Entry</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RIGHT PANEL: DASHBOARD -->
+      <div class="dashboard-section glass-panel">
+        <div class="panel-header">
+          <h3>Live Session Stats</h3>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total Documents</span>
+            <span class="stat-value" id="totalCount">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Time</span>
+            <span class="stat-value" id="totalTime">0 <small>mins</small></span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Avg Time/Doc</span>
+            <span class="stat-value" id="avgTime">0 <small>mins</small></span>
+          </div>
+        </div>
+
+        <div class="recent-activity">
+          <h4>Recent Submissions</h4>
+          <ul class="activity-list">
+            <% entries.forEach(entry=> { %>
+            <li>
+              <span> <%= new Date(entry.date).toLocaleDateString() %> </span>
+              <span>
+                <%= entry.entries.reduce((sum, e)=> sum + e.count, 0) %> Docs
+              </span>
+            </li>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/js/script.js"></script>
+
+    <script>
+      const Objects = <%- JSON.stringify(Objects) %>;
+
+      const loadDocTypes = (queueValue) => {
+        // const selectDocType = document.getElementById("doctypes");
+        const selectDocType = queueValue.parentElement.parentElement.children[2].childNodes[3];
+        
+        selectDocType.length = 1; // This will remove the previous options
+
+        // The queue value matches the key in documentType object (e.g., "Queue1")
+
+        selectDocType.innerHTML = '<option value="" disabled selected>Select</option>';
+        const docTypes = Objects.documentType[queueValue.value];
+
+        docTypes.forEach((item) => {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          selectDocType.appendChild(option);
+        });
+      }
+    </script>
+  </body>
+</html>
