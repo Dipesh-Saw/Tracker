@@ -85,8 +85,20 @@ input, select {
     outline: none;
     transition: all 0.3s ease;
 }
-.input-group::placeholder{
+input::placeholder{
     color: white;
+}
+input[type="number"] {
+  appearance: textfield;
+}
+input[type="number"]:hover {
+    cursor: pointer;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 input:focus, select:focus {

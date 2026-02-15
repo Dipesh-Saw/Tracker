@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
   trackerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const userName = trackerForm.username.value;
+    const username = trackerForm.username.value;
     const date = trackerForm.date.value;
     const dayType = trackerForm.dayType.value;
     const rows = [];
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("/api/entry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userName, date, dayType, rows }),
+        body: JSON.stringify({ username, date, dayType, rows }),
       });
 
       const data = await res.json();
