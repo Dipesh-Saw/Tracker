@@ -57,6 +57,11 @@ app.get('/', isAuthenticated, async (req, res) => {
 });
 
 // Error Handling (must be last)
+// Suppress 404 logs for Chrome DevTools discovery
+app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+  res.sendStatus(404);
+});
+
 app.use(notFoundHandler);
 app.use(errorHandler);
 

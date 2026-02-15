@@ -103,7 +103,7 @@ function renderProductivityChart(timeline) {
 
     // Create chart
     productivityChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [
