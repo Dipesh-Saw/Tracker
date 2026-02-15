@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Document Count Tracker with Auth and Dashboard",
   "main": "server.js",
-  "Developer":"Dipesh Saw",
+  "Developer": "Dipesh Saw",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
