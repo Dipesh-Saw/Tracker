@@ -1,0 +1,67 @@
+/* Add improved button styles after the existing button styles */
+
+/* Add Row Button - Outline Style */
+.btn-add {
+    background: white;
+    color: var(--blue-greeny);
+    border: 2px solid var(--blue-greeny);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.btn-add::before {
+    content: '+';
+    font-size: 1.4rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.btn-add:hover {
+    background: var(--blue-greeny);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(92, 189, 185, 0.3);
+}
+
+/* Submit Entry Button - More Prominent */
+.btn-submit-entry {
+    background: var(--blue-greeny);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(92, 189, 185, 0.35);
+    min-width: 160px;
+}
+
+.btn-submit-entry:hover {
+    background: var(--primary-btn-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(92, 189, 185, 0.45);
+}
+
+.btn-submit-entry:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(92, 189, 185, 0.3);
+}
+
+/* Actions row styling */
+.actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    gap: 20px;
+}

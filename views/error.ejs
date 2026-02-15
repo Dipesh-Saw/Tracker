@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - DocTracker</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+</head>
+
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-card glass-card">
+            <h2>⚠️ Error <%= statusCode %>
+            </h2>
+            <p class="subtitle">
+                <%= error %>
+            </p>
+            <a href="/" class="btn-primary" style="display: inline-block; text-decoration: none; margin-top: 20px;">
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

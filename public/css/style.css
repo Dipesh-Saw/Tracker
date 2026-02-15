@@ -1,12 +1,33 @@
 :root {
-    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --glass-bg: rgba(255, 255, 255, 0.15);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --text-color: #ffffff;
-    --input-bg: rgba(255, 255, 255, 0.1);
-    --input-focus: rgba(255, 255, 255, 0.25);
-    --primary-btn: #4facfe;
-    --primary-btn-hover: #00f2fe;
+    /* Eye-friendly White & Blue Color Palette */
+    --pinky: #fbe3e8;
+    --blue-greeny: #5cbdb9;
+    --teeny-greeny: #ebf6f5;
+
+    /* Background colors */
+    --bg-gradient: linear-gradient(135deg, var(--teeny-greeny) 0%, #ffffff 100%);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(92, 189, 185, 0.2);
+
+    /* Text colors */
+    --text-color: #2d3748;
+    --text-muted: #718096;
+    --text-light: #a0aec0;
+
+    /* Input colors */
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-border: rgba(92, 189, 185, 0.3);
+    --input-focus: rgba(92, 189, 185, 0.5);
+
+    /* Button colors */
+    --primary-btn: var(--blue-greeny);
+    --primary-btn-hover: #4da9a5;
+    --accent-color: var(--blue-greeny);
+
+    /* Status colors */
+    --success-color: #68D391;
+    --error-color: #FC8181;
+    --warning-color: #F6AD55;
 }
 
 * {
@@ -31,7 +52,10 @@ body {
 }
 
 /* Glassmorphism Cards */
-.glass-card, .glass-panel, .glass, .navbar {
+.glass-card,
+.glass-panel,
+.glass,
+.navbar {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -74,32 +98,42 @@ body {
     font-weight: 600;
 }
 
-input, select {
+input,
+select {
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid var(--glass-border);
+    border: 2px solid var(--input-border);
     background: var(--input-bg);
-    color: white;
+    color: var(--text-color);
     font-size: 1rem;
     outline: none;
     transition: all 0.3s ease;
 }
-.input-group::placeholder{
-    color: white;
+
+.input-group::placeholder {
+    color: var(--text-muted);
 }
 
-input:focus, select:focus {
-    background: var(--input-focus);
-    border-color: rgba(255,255,255,0.5);
+input:focus,
+select:focus {
+    background: white;
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 3px rgba(92, 189, 185, 0.1);
 }
 
 select option {
-    background: #333; /* Dark background for dropdowns */
-    color: white;
+    background: white;
+    color: var(--text-color);
 }
 
-.btn-primary, .btn-submit, .btn-secondary {
+/* Dark background for dropdowns */
+color: white;
+}
+
+.btn-primary,
+.btn-submit,
+.btn-secondary {
     width: 100%;
     padding: 12px;
     border: none;
@@ -110,18 +144,33 @@ select option {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.btn-primary, .btn-submit {
-    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+.btn-primary,
+.btn-submit {
+    background: var(--primary-btn);
     color: white;
     margin-top: 10px;
+    box-shadow: 0 4px 14px 0 rgba(92, 189, 185, 0.3);
+}
+
+.btn-primary:hover,
+.btn-submit:hover {
+    background: var(--primary-btn-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px 0 rgba(92, 189, 185, 0.4);
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
+    background: var(--pinky);
+    color: var(--text-color);
+    font-weight: 600;
 }
 
-.btn-primary:active, .btn-submit:active {
+.btn-secondary:hover {
+    background: #f9d5dd;
+}
+
+.btn-primary:active,
+.btn-submit:active {
     transform: scale(0.98);
 }
 
@@ -130,9 +179,11 @@ select option {
     font-size: 0.9rem;
 }
 
-.auth-redirect a, .form-footer a {
-    color: #00f2fe;
+.auth-redirect a,
+.form-footer a {
+    color: var(--accent-color);
     text-decoration: none;
+    font-weight: 500;
 }
 
 .alert {
@@ -143,9 +194,9 @@ select option {
 }
 
 .alert.error {
-    background: rgba(255, 99, 71, 0.2);
-    border: 1px solid rgba(255, 99, 71, 0.5);
-    color: #ffcccb;
+    background: rgba(252, 129, 129, 0.15);
+    border: 1px solid rgba(252, 129, 129, 0.4);
+    color: var(--error-color);
 }
 
 /* Dashboard & Form Layout */
@@ -156,15 +207,18 @@ select option {
     padding: 15px 30px;
     margin: 20px;
     border-radius: 12px;
+    color: var(--text-color);
 }
 
 .brand {
     font-size: 1.5rem;
     font-weight: bold;
+    color: var(--blue-greeny);
 }
 
 .user-menu span {
     margin-right: 15px;
+    color: var(--text-color);
 }
 
 .btn-logout {
@@ -214,8 +268,9 @@ select option {
 }
 
 .readonly-input {
-    background: rgba(0,0,0,0.2);
+    background: var(--teeny-greeny);
     cursor: default;
+    border-color: var(--glass-border);
 }
 
 .divider {
@@ -235,14 +290,17 @@ select option {
     display: flex;
     gap: 10px;
     align-items: flex-end;
-    background: rgba(0,0,0,0.1);
+    background: var(--teeny-greeny);
     padding: 15px;
     border-radius: 12px;
-    transition: background 0.3s;
+    border: 1px solid rgba(92, 189, 185, 0.15);
+    transition: all 0.3s;
 }
 
 .entry-row:hover {
-    background: rgba(0,0,0,0.15);
+    background: #e0f2f1;
+    border-color: rgba(92, 189, 185, 0.3);
+    box-shadow: 0 2px 8px rgba(92, 189, 185, 0.1);
 }
 
 .entry-row .input-group {
@@ -251,7 +309,7 @@ select option {
 
 .entry-row .input-group label {
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.7);
+    color: var(--text-muted);
 }
 
 .btn-remove {
@@ -290,29 +348,31 @@ select option {
 }
 
 .stat-card {
-    background: rgba(255,255,255,0.05);
+    background: white;
     padding: 20px;
     border-radius: 12px;
+    border: 1px solid var(--glass-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 8px rgba(92, 189, 185, 0.08);
 }
 
 .stat-label {
     font-size: 0.9rem;
-    color: rgba(255,255,255,0.7);
+    color: var(--text-muted);
 }
 
 .stat-value {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #00f2fe;
+    color: var(--accent-color);
 }
 
 .recent-activity h4 {
     margin-bottom: 15px;
     font-size: 1rem;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .activity-list {
@@ -321,7 +381,7 @@ select option {
 
 .activity-list li {
     padding: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
@@ -331,16 +391,147 @@ select option {
     border-bottom: none;
 }
 
+/* Productivity Graph Styles */
+.productivity-section {
+    margin: 2rem auto;
+    max-width: 95%;
+}
+
+.range-btn {
+    padding: 8px 16px;
+    background: white;
+    color: var(--text-color);
+    border: 2px solid var(--input-border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.range-btn:hover {
+    background: var(--teeny-greeny);
+    border-color: var(--blue-greeny);
+}
+
+.range-btn.active {
+    background: var(--blue-greeny);
+    border-color: var(--blue-greeny);
+    color: white;
+    box-shadow: 0 2px 8px 0 rgba(92, 189, 185, 0.3);
+}
+
+.productivity-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 1rem;
+}
+
+.chart-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.breakdown-card {
+    background: var(--pinky);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(251, 227, 232, 0.5);
+}
+
+.breakdown-card h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.breakdown-card ul {
+    list-style: none;
+    padding: 0;
+    font-size: 0.85rem;
+}
+
+.breakdown-card li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+}
+
+/* Improved Button Styles */
+.btn-add {
+    background: white !important;
+    color: var(--blue-greeny) !important;
+    border: 2px solid var(--blue-greeny) !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-add::before {
+    content: '+';
+    font-size: 1.4rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.btn-add:hover {
+    background: var(--blue-greeny) !important;
+    color: white !important;
+    transform: translateY(- 1px);
+    box-shadow: 0 4px 12px rgba(92, 189, 185, 0.3);
+}
+
+.btn-submit-entry {
+    background: var(--blue-greeny) !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 32px !important;
+    border-radius: 10px !important;
+    cursor: pointer;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(92, 189, 185, 0.35);
+    min-width: 160px;
+}
+
+.btn-submit-entry:hover {
+    background: var(--primary-btn-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(92, 189, 185, 0.45);
+}
+
+.btn-submit-entry:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(92, 189, 185, 0.3);
+}
+
 /* Respnsive */
 @media (max-width: 1000px) {
     .main-container {
         grid-template-columns: 1fr;
     }
-    
+
     .entry-row {
         flex-wrap: wrap;
     }
-    
+
     .entry-row .input-group {
         min-width: 120px;
     }
