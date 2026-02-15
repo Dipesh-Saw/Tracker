@@ -13,7 +13,6 @@ const { log } = require("console");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-console.log(process.env.MONGO_URI);
 
 const MONGO_URI =
   process.env.MONGO_URI || "mongodb://localhost:27017/docTracker";
@@ -27,13 +26,13 @@ app.set("view engine", "ejs");
 // Database Connection
 mongoose
   .connect(MONGO_URI)
-  .then(() => console.log("MongoDB Connected", MONGO_URI))
+  .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
 // Session Setup
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: MONGO_URI }),
