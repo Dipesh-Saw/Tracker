@@ -86,6 +86,22 @@ app.get("/", isAuthenticated, async (req, res) => {
   }
 });
 
+// Analytics Dashboard
+app.get("/dashboard", isAuthenticated, async (req, res) => {
+  try {
+    let entries;
+    if (res.locals.user && res.locals.user.isAdmin) {
+      entries = await Entry.find({}).sort({ date: -1 });
+    } else {
+      entries = await Entry.find({ user: req.session.userId }).sort({ date: -1 });
+    }
+    res.render("dashboard", { entries });
+  } catch (err) {
+    console.error(err);
+    res.render("dashboard", { entries: [] });
+  }
+});
+
 // Create Entry
 app.post("/api/entry", isAuthenticated, async (req, res) => {
   try {
