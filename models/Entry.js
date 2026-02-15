@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const entrySchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    username: { type: String, required: true },
     date: { type: Date, required: true },
     dayType: { type: String, enum: ['Half Day', 'Full Day'], required: true },
     entries: [{

@@ -84,7 +84,7 @@ app.get("/", isAuthenticated, async (req, res) => {
 // Create Entry
 app.post("/api/entry", isAuthenticated, async (req, res) => {
   try {
-    const { date, dayType, rows } = req.body;
+    const { date, dayType, rows, username } = req.body;
 
     // rows is expected to be an array of objects
     // If it's a single object (one row), wrap it?
@@ -92,6 +92,7 @@ app.post("/api/entry", isAuthenticated, async (req, res) => {
 
     const newEntry = new Entry({
       user: req.session.userId,
+      username,
       date,
       dayType,
       entries: rows, // Assuming rows structure matches schema
