@@ -14,8 +14,7 @@ const { log } = require("console");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://localhost:27017/docTracker";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/docTracker";
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,7 +25,13 @@ app.set("view engine", "ejs");
 // Database Connection
 mongoose
   .connect(MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
+  .then(() => {
+    if (process.env.MONGO_URI) {
+      console.log("Cloud database is connected");
+    } else {
+      console.log("Local MongoDB connected");
+    }
+  })
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
 // Session Setup
@@ -85,17 +90,17 @@ app.get("/", isAuthenticated, async (req, res) => {
 app.post("/api/entry", isAuthenticated, async (req, res) => {
   try {
     const { date, dayType, rows, username } = req.body;
+    const user = res.locals.user; // Get user from locals populated by middleware
 
-    // rows is expected to be an array of objects
-    // If it's a single object (one row), wrap it?
-    // Better to handle parsing on client side to always send JSON array
+    // If not admin, force username to be the logged-in user's username
+    const entryUsername = (user.isAdmin && username) ? username : user.username;
 
     const newEntry = new Entry({
       user: req.session.userId,
-      username,
+      username: entryUsername,
       date,
       dayType,
-      entries: rows, // Assuming rows structure matches schema
+      entries: rows,
     });
 
     await newEntry.save();
@@ -157,6 +162,71 @@ app.get("/auth/logout", (req, res) => {
 
 app.get("/auth/forgot-password", isGuest, (req, res) => {
   res.render("forgot-password", { message: null, error: null });
+});
+
+app.post("/auth/forgot-password", isGuest, (req, res) => {
+  res.render("forgot-password", { message: "This function is not working now, please reach out to your POC", error: null });
+});
+
+const exceljs = require("exceljs");
+
+// ... (existing imports)
+
+// Export to Excel
+app.get("/api/export-excel", isAuthenticated, async (req, res) => {
+  try {
+    const workbook = new exceljs.Workbook();
+    const worksheet = workbook.addWorksheet("Entries");
+
+    worksheet.columns = [
+      { header: "Username", key: "username", width: 20 },
+      { header: "Date", key: "date", width: 15 },
+      { header: "Day Type", key: "dayType", width: 15 },
+      { header: "Platform", key: "platform", width: 15 },
+      { header: "Queue", key: "queue", width: 15 },
+      { header: "Document Type", key: "docType", width: 20 },
+      { header: "Count", key: "count", width: 10 },
+      { header: "Time (mins)", key: "timeInMins", width: 15 },
+    ];
+
+    let entries;
+    if (res.locals.user && res.locals.user.isAdmin) {
+      entries = await Entry.find({}).sort({ date: -1 });
+    } else {
+      entries = await Entry.find({ user: req.session.userId }).sort({ date: -1 });
+    }
+
+    entries.forEach((entry) => {
+      const entryDate = new Date(entry.date).toLocaleDateString();
+      entry.entries.forEach((row) => {
+        worksheet.addRow({
+          username: entry.username, // Using the stored username
+          date: entryDate,
+          dayType: entry.dayType,
+          platform: row.platform,
+          queue: row.queue,
+          docType: row.docType,
+          count: row.count,
+          timeInMins: row.timeInMins,
+        });
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + "DailyTrackerData.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("Export Error:", err);
+    res.status(500).send("Error exporting data");
+  }
 });
 
 // Start Server

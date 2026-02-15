@@ -212,6 +212,25 @@ select option {
     border-bottom: 1px solid var(--glass-border);
     padding-bottom: 15px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-export {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-export:hover {
+    background: rgba(46, 204, 113, 0.4);
+    color: #fff;
 }
 
 /* Form Styles */

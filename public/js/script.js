@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
       if (data.success) {
-        alert("Entry Saved!");
+        alert("Data Successfuly Saved to Database");
         window.location.reload();
       } else {
         alert("Error: " + data.message);
