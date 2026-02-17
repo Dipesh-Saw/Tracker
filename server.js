@@ -14,7 +14,8 @@ const { log } = require("console");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/docTracker";
+const MONGO_URI =
+  process.env.MONGO_URI || "mongodb://localhost:27017/docTracker";
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -42,7 +43,7 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: MONGO_URI }),
     cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
-  })
+  }),
 );
 
 // Auth Middleware
@@ -79,10 +80,17 @@ app.get("/", isAuthenticated, async (req, res) => {
     const entries = await Entry.find({ user: req.session.userId })
       .sort({ date: -1 })
       .limit(5);
-    res.render("index", { entries, Objects: Objects });
+
+    // Fetch all users for the username dropdown (for admins)
+    let users = [];
+    if (res.locals.user && res.locals.user.isAdmin) {
+      users = await User.find({}, "username").sort({ username: 1 });
+    }
+
+    res.render("index", { entries, Objects: Objects, users });
   } catch (err) {
     console.error(err);
-    res.render("index", { entries: [], Objects: Objects });
+    res.render("index", { entries: [], Objects: Objects, users: [] });
   }
 });
 
@@ -93,12 +101,14 @@ app.get("/dashboard", isAuthenticated, async (req, res) => {
     if (res.locals.user && res.locals.user.isAdmin) {
       entries = await Entry.find({}).sort({ date: -1 });
     } else {
-      entries = await Entry.find({ user: req.session.userId }).sort({ date: -1 });
+      entries = await Entry.find({ user: req.session.userId }).sort({
+        date: -1,
+      });
     }
-    res.render("dashboard", { entries });
+    res.render("dashboard", { entries, Objects: Objects });
   } catch (err) {
     console.error(err);
-    res.render("dashboard", { entries: [] });
+    res.render("dashboard", { entries: [], Objects: Objects });
   }
 });
 
@@ -109,7 +119,7 @@ app.post("/api/entry", isAuthenticated, async (req, res) => {
     const user = res.locals.user; // Get user from locals populated by middleware
 
     // If not admin, force username to be the logged-in user's username
-    const entryUsername = (user.isAdmin && username) ? username : user.username;
+    const entryUsername = user.isAdmin && username ? username : user.username;
 
     const newEntry = new Entry({
       user: req.session.userId,
@@ -181,7 +191,10 @@ app.get("/auth/forgot-password", isGuest, (req, res) => {
 });
 
 app.post("/auth/forgot-password", isGuest, (req, res) => {
-  res.render("forgot-password", { message: "This function is not working now, please reach out to your POC", error: null });
+  res.render("forgot-password", {
+    message: "This function is not working now, please reach out to your POC",
+    error: null,
+  });
 });
 
 const exceljs = require("exceljs");
@@ -209,7 +222,9 @@ app.get("/api/export-excel", isAuthenticated, async (req, res) => {
     if (res.locals.user && res.locals.user.isAdmin) {
       entries = await Entry.find({}).sort({ date: -1 });
     } else {
-      entries = await Entry.find({ user: req.session.userId }).sort({ date: -1 });
+      entries = await Entry.find({ user: req.session.userId }).sort({
+        date: -1,
+      });
     }
 
     entries.forEach((entry) => {
@@ -230,11 +245,11 @@ app.get("/api/export-excel", isAuthenticated, async (req, res) => {
 
     res.setHeader(
       "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     );
     res.setHeader(
       "Content-Disposition",
-      "attachment; filename=" + "DailyTrackerData.xlsx"
+      "attachment; filename=" + "DailyTrackerData.xlsx",
     );
 
     await workbook.xlsx.write(res);

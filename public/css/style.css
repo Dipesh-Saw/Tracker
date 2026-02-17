@@ -439,6 +439,12 @@ select option {
     border-bottom: none;
 }
 
+.bottom-row{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 2%;
+}
 /* Respnsive */
 @media (max-width: 1000px) {
     .main-container {

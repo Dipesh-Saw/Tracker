@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - DocTracker</title>
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="../public/img/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
 </head>
 
@@ -35,10 +36,15 @@
           <div class="input-group">
             <label>Username</label>
             <% if (user.isAdmin) { %>
-              <input type="text" name="username" value="<%= user.username %>" />
-              <% } else { %>
-                <input type="text" name="username" class="readonly-input" value="<%= user.username %>" readonly />
-                <% } %>
+              <select name="username" required id="usernameSelect">
+                <option value="">Select User</option>
+                <% users.forEach(function(u) { %>
+                  <option value="<%= u.username %>" <%= u.username === user.username ? 'selected' : '' %>><%= u.username %></option>
+                <% }); %>
+              </select>
+            <% } else { %>
+              <input type="text" name="username" class="readonly-input" value="<%= user.username %>" readonly />
+            <% } %>
           </div>
           <div class="input-group">
             <label>Date</label>

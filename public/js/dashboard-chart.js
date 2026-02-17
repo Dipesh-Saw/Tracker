@@ -1,16 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
   const entries = window.dashboardData || [];
 
-  // Initialize date picker with today's date
+  // Initialize date pickers with today's date
   const today = new Date();
   const dateInput = document.getElementById("dateFilter");
+  const queueInput = document.getElementById("queueFilter");
+  const queueDateInput = document.getElementById("queueDateFilter");
+  const queuePerformanceInput = document.getElementById(
+    "queuePerformanceFilter",
+  );
+
   dateInput.valueAsDate = today;
+  queueDateInput.valueAsDate = today;
 
   // Store chart instances to destroy them before re-rendering
-  let doctypeChart, platformChart, weeklyChart;
+  let doctypeChart, platformChart, weeklyChart, queuePerformanceChart;
 
-  // Function to process data based on selected date
-  function processData(selectedDateStr) {
+  // Function to process data based on selected date and queue
+  function processData(selectedDateStr, selectedQueue = "all") {
     // Get selected date
     const selectedDate = new Date(selectedDateStr);
     selectedDate.setHours(0, 0, 0, 0);
@@ -74,8 +81,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Weekly stats (for all processors in last 7 days)
+        // Filter by queue if selected
         if (last7Days.includes(entryDateStr)) {
-          weeklyDataByUser[username][entryDateStr] += count;
+          if (selectedQueue === "all" || row.queue === selectedQueue) {
+            weeklyDataByUser[username][entryDateStr] += count;
+          }
         }
       });
     });
@@ -90,6 +100,54 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("efficiency").textContent = efficiency;
 
     return { doctypeCounts, platformCounts, last7Days, weeklyDataByUser };
+  }
+
+  // Function to process queue performance data for a specific date and queue
+  function processQueuePerformanceData(selectedDateStr, selectedQueue) {
+    if (!selectedQueue) {
+      return { processorData: {}, docTypes: [] };
+    }
+
+    const selectedDate = new Date(selectedDateStr);
+    selectedDate.setHours(0, 0, 0, 0);
+    const filterDateStr = selectedDate.toLocaleDateString();
+
+    const processorData = {}; // { username: { docType: count } }
+    const docTypesSet = new Set();
+
+    entries.forEach((entry) => {
+      const entryDate = new Date(entry.date);
+      entryDate.setHours(0, 0, 0, 0);
+      const entryDateStr = entryDate.toLocaleDateString();
+      const isSelectedDate = entryDateStr === filterDateStr;
+      const username = entry.username || "Unknown";
+
+      if (isSelectedDate) {
+        entry.entries.forEach((row) => {
+          if (row.queue === selectedQueue) {
+            const count = row.count || 0;
+            const docType = row.docType || "Unknown";
+
+            // Initialize processor data if not exists
+            if (!processorData[username]) {
+              processorData[username] = {};
+            }
+
+            // Add count to processor's docType
+            processorData[username][docType] =
+              (processorData[username][docType] || 0) + count;
+
+            // Track all document types
+            docTypesSet.add(docType);
+          }
+        });
+      }
+    });
+
+    return {
+      processorData,
+      docTypes: Array.from(docTypesSet).sort(),
+    };
   }
 
   // Function to render all charts
@@ -246,13 +304,189 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Initial render with today's date
-  const initialData = processData(dateInput.value);
+  // Function to render queue performance chart
+  function renderQueuePerformanceChart(selectedDateStr, selectedQueue) {
+    // Destroy existing chart
+    if (queuePerformanceChart) queuePerformanceChart.destroy();
+
+    const { processorData, docTypes } = processQueuePerformanceData(
+      selectedDateStr,
+      selectedQueue,
+    );
+
+    const ctx = document
+      .getElementById("queuePerformanceChart")
+      .getContext("2d");
+
+    const processors = Object.keys(processorData);
+
+    if (!selectedQueue || processors.length === 0) {
+      // Show empty state
+      queuePerformanceChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["No Data"],
+          datasets: [
+            {
+              label: "Documents Processed",
+              data: [0],
+              backgroundColor: "rgba(108, 92, 231, 0.7)",
+              borderColor: "rgba(108, 92, 231, 1)",
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { color: "#2d3436" },
+            },
+            y: {
+              ticks: { color: "#2d3436" },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: selectedQueue
+                ? "No data available for selected date and queue"
+                : "Please select a queue",
+              color: "#636e72",
+              font: { size: 14 },
+            },
+          },
+        },
+      });
+      return;
+    }
+
+    // Define colors for different document types
+    const docTypeColors = [
+      { bg: "rgba(102, 126, 234, 0.8)", border: "rgba(102, 126, 234, 1)" },
+      { bg: "rgba(118, 75, 162, 0.8)", border: "rgba(118, 75, 162, 1)" },
+      { bg: "rgba(253, 121, 168, 0.8)", border: "rgba(253, 121, 168, 1)" },
+      { bg: "rgba(9, 132, 227, 0.8)", border: "rgba(9, 132, 227, 1)" },
+      { bg: "rgba(0, 184, 148, 0.8)", border: "rgba(0, 184, 148, 1)" },
+      { bg: "rgba(253, 203, 110, 0.8)", border: "rgba(253, 203, 110, 1)" },
+      { bg: "rgba(214, 48, 49, 0.8)", border: "rgba(214, 48, 49, 1)" },
+      { bg: "rgba(108, 92, 231, 0.8)", border: "rgba(108, 92, 231, 1)" },
+      { bg: "rgba(255, 159, 64, 0.8)", border: "rgba(255, 159, 64, 1)" },
+      { bg: "rgba(75, 192, 192, 0.8)", border: "rgba(75, 192, 192, 1)" },
+    ];
+
+    // Create datasets for each document type
+    const datasets = docTypes.map((docType, index) => {
+      const colorIndex = index % docTypeColors.length;
+      return {
+        label: docType,
+        data: processors.map(
+          (processor) => processorData[processor][docType] || 0,
+        ),
+        backgroundColor: docTypeColors[colorIndex].bg,
+        borderColor: docTypeColors[colorIndex].border,
+        borderWidth: 1,
+      };
+    });
+
+    // Render stacked horizontal bar chart
+    queuePerformanceChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: processors,
+        datasets: datasets,
+      },
+      options: {
+        indexAxis: "y", // Horizontal bar chart
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            stacked: true, // Enable stacking
+            beginAtZero: true,
+            ticks: {
+              color: "#2d3436",
+              precision: 0,
+            },
+            title: {
+              display: true,
+              text: "Number of Documents",
+              color: "#2d3436",
+              font: { size: 12, weight: "bold" },
+            },
+          },
+          y: {
+            stacked: true, // Enable stacking
+            ticks: { color: "#2d3436" },
+            title: {
+              display: true,
+              text: "Processors",
+              color: "#2d3436",
+              font: { size: 12, weight: "bold" },
+            },
+          },
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: "top",
+            labels: {
+              color: "#2d3436",
+              usePointStyle: true,
+              padding: 10,
+              font: { size: 11 },
+            },
+          },
+          tooltip: {
+            mode: "index",
+            intersect: false,
+            callbacks: {
+              footer: function (tooltipItems) {
+                let total = 0;
+                tooltipItems.forEach((item) => {
+                  total += item.parsed.x;
+                });
+                return "Total: " + total;
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  // Initial render with today's date and all queues
+  const initialData = processData(dateInput.value, queueInput.value);
   renderCharts(initialData);
+
+  // Initial render of queue performance chart
+  renderQueuePerformanceChart(
+    queueDateInput.value,
+    queuePerformanceInput.value,
+  );
 
   // Add event listener for date changes
   dateInput.addEventListener("change", (e) => {
-    const newData = processData(e.target.value);
+    const newData = processData(e.target.value, queueInput.value);
     renderCharts(newData);
+  });
+
+  // Add event listener for queue filter changes
+  queueInput.addEventListener("change", (e) => {
+    const newData = processData(dateInput.value, e.target.value);
+    renderCharts(newData);
+  });
+
+  // Add event listeners for queue performance chart
+  queueDateInput.addEventListener("change", (e) => {
+    renderQueuePerformanceChart(e.target.value, queuePerformanceInput.value);
+  });
+
+  queuePerformanceInput.addEventListener("change", (e) => {
+    renderQueuePerformanceChart(queueDateInput.value, e.target.value);
   });
 });
