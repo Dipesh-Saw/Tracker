@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - DocTracker</title>
   <link rel="stylesheet" href="/css/style.css" />
-  <link rel="icon" href="../public/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
 </head>
 
@@ -67,7 +67,7 @@
 
         <!-- ROW 2+: Dynamic Entries -->
         <div id="entriesContainer">
-          <div> Productive Time </div>
+          <div style="margin-bottom: 15px; font-weight: 600; color: var(--accent-purple);"> Productive Time </div>
           <!-- Initial Row -->
           <div class="entry-row">
             <div class="input-group">
@@ -204,7 +204,7 @@
   <script type="module" src="/js/script.js"></script>
 
   <script>
-    const Objects = <% - JSON.stringify(Objects) %>;
+    const Objects = <%- JSON.stringify(Objects) %>;
 
     const loadDocTypes = (queueValue) => {
       // const selectDocType = document.getElementById("doctypes");

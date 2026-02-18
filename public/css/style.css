@@ -409,7 +409,7 @@ select option {
 
 .non-productive-row .input-group label {
     font-size: 0.8rem;
-    color: var(--warning-orange);
+    color: #c98300;
     font-weight: 500;
 }
 
