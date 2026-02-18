@@ -1,110 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Analytics Dashboard - DocTracker</title>
-    <link rel="stylesheet" href="/css/style.css" />
-    <link rel="icon" type="image/png" href="/img/favicon.png">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-      @media (max-width: 1100px) {
-        .charts-grid {
-          grid-template-columns: 1fr !important;
-        }
 
-        .charts-grid > div {
-          grid-column: span 1 !important;
-        }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics Dashboard - DocTracker</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @media (max-width: 1100px) {
+      .charts-grid {
+        grid-template-columns: 1fr !important;
       }
-    </style>
-  </head>
 
-  <body>
-    <nav class="navbar glass">
-      <div class="brand">Productivity Tracker</div>
-      <div class="user-menu">
-        <span>Welcome, <strong> <%= user.username %> </strong></span>
-        <a href="/auth/logout" class="btn-logout">Logout</a>
-        <a
-          href="/"
-          class="btn-secondary"
-          style="
+      .charts-grid>div {
+        grid-column: span 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar glass">
+    <div class="brand">Productivity Tracker</div>
+    <div class="user-menu">
+      <span>Welcome, <strong>
+          <%= user.username %>
+        </strong></span>
+      <a href="/auth/logout" class="btn-logout">Logout</a>
+      <a href="/" class="btn-secondary" style="
             margin: 10px;
             text-decoration: none;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             box-shadow: 0 4px 15px rgba(138, 114, 249, 0.4);
-          "
-          >Back to Tracker</a
-        >
-      </div>
-    </nav>
+          ">Back to Tracker</a>
+    </div>
+  </nav>
 
-    <div class="dashboard-container">
-      <!-- Top Row: Doctype, Platform, Stats -->
-      <div
-        class="top-row"
-        style="
+  <div class="dashboard-container">
+    <!-- Top Row: Doctype, Platform, Stats -->
+    <div class="top-row" style="
           display: flex;
           gap: 2rem;
           width: 100%;
           margin-bottom: 2rem;
           flex-wrap: wrap;
-        "
-      >
-        <!-- Doctype Chart -->
-        <div class="glass-panel" style="flex: 1.2; min-width: 300px">
-          <div class="panel-header">
-            <h3>Types of Documents Processed Today</h3>
-          </div>
-          <div style="position: relative; height: 300px; width: 100%">
-            <canvas id="doctypeChart"></canvas>
-          </div>
+        ">
+      <!-- Doctype Chart -->
+      <div class="glass-panel" style="flex: 1.2; min-width: 300px">
+        <div class="panel-header">
+          <h3>Types of Documents Processed Today</h3>
         </div>
-
-        <!-- Platform Chart -->
-        <div class="glass-panel" style="flex: 1; min-width: 300px">
-          <div class="panel-header">
-            <h3>Documents Processed by Platform</h3>
-          </div>
-          <div style="position: relative; height: 300px; width: 100%">
-            <canvas id="platformChart"></canvas>
-          </div>
+        <div style="position: relative; height: 300px; width: 100%">
+          <canvas id="doctypeChart"></canvas>
         </div>
+      </div>
 
-        <!-- Stats Card -->
-        <div class="glass-panel" style="flex: 1; min-width: 250px">
-          <div
-            class="panel-header"
-            style="flex-direction: column; align-items: flex-start; gap: 15px"
-          >
-            <div
-              style="
+      <!-- Platform Chart -->
+      <div class="glass-panel" style="flex: 1; min-width: 300px">
+        <div class="panel-header">
+          <h3>Documents Processed by Platform</h3>
+        </div>
+        <div style="position: relative; height: 300px; width: 100%">
+          <canvas id="platformChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Stats Card -->
+      <div class="glass-panel" style="flex: 1; min-width: 250px">
+        <div class="panel-header" style="flex-direction: column; align-items: flex-start; gap: 15px">
+          <div style="
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 width: 100%;
-              "
-            >
-              <h3>Performance Overview</h3>
-            </div>
-            <div style="width: 100%">
-              <label
-                style="
+              ">
+            <h3>Performance Overview</h3>
+          </div>
+          <div style="width: 100%">
+            <label style="
                   font-size: 0.85rem;
                   color: var(--accent-purple);
                   font-weight: 600;
                   margin-bottom: 8px;
                   display: block;
-                "
-                >Select Date:</label
-              >
-              <input
-                type="date"
-                id="dateFilter"
-                style="
+                ">Select Date:</label>
+            <input type="date" id="dateFilter" style="
                   width: 100%;
                   padding: 8px 12px;
                   border-radius: 8px;
@@ -112,95 +95,104 @@
                   background: var(--input-bg);
                   color: var(--text-color);
                   font-size: 0.9rem;
-                "
-              />
-            </div>
-          </div>
-          <div class="stats-grid" style="grid-template-columns: 1fr; gap: 10px">
-            <div class="stat-card">
-              <span class="stat-label">Total Documents</span>
-              <span class="stat-value" id="totalDocs">0</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-label">Total Hours</span>
-              <span class="stat-value" id="totalHours">0</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-label">Efficiency (Docs/Hr)</span>
-              <span class="stat-value" id="efficiency">0</span>
-            </div>
+                " />
           </div>
         </div>
-      </div>
-
-
-      <div class="bottom-row">
-        <!-- Bottom Row: Weekly Trend Chart -->
-        <div class="" style="width: 100%; flex: 1.2; min-width: 250px">
-          <div class="glass-panel">
-            <div class="panel-header" style="flex-direction: column; align-items: flex-start; gap: 15px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <div>
-                  <h3>Weekly Trends (Last 7 Days)</h3>
-                </div>
-                <div style="width: 100%; max-width: 300px;">
-                  <label style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600; margin-bottom: 8px; display: block;">Filter by Queue:</label>
-                <select 
-                id="queueFilter" 
-                style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1.5px solid rgba(138, 114, 249, 0.25); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;"
-                >
-                  <option value="all">All Queues</option>
-                  <% Objects.Queue.forEach(function(q) { %>
-                    <option value="<%= q %>"><%= q %></option>
-                    <% }); %>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div style="position: relative; height: 350px; width: 100%">
-              <canvas id="weeklyChart"></canvas>
-            </div>
+        <div class="stats-grid" style="grid-template-columns: 1fr; gap: 10px">
+          <div class="stat-card">
+            <span class="stat-label">Total Documents</span>
+            <span class="stat-value" id="totalDocs">0</span>
           </div>
-        </div>
-
-        <!-- Queue Performance Chart by Date -->
-        <div class="" style="width: 100%; flex: 1;">
-          <div class="glass-panel">
-            <div class="panel-header" style="flex-direction: column; align-items: flex-start; gap: 15px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                <h3>Queue Performance by Processor</h3>
-              </div>
-              <div style="display: flex; gap: 15px; width: 100%; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 200px;">
-                  <label style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600; margin-bottom: 8px; display: block;">
-                    Select Date:
-                  </label>
-                  <input type="date" id="queueDateFilter" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1.5px solid rgba(138, 114, 249, 0.25); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;"/>
-                </div>
-                <div style="flex: 1; min-width: 200px;">
-                  <label style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600; margin-bottom: 8px; display: block;">Select Queue:</label>
-                  <select id="queuePerformanceFilter" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1.5px solid rgba(138, 114, 249, 0.25); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;">
-                    <option value="">Select a queue</option>
-                    <% Objects.Queue.forEach(function(q) { %>
-                      <option value="<%= q %>"><%= q %></option>
-                    <% }); %>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div style="position: relative; height: 350px; width: 100%">
-              <canvas id="queuePerformanceChart"></canvas>
-            </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Hours</span>
+            <span class="stat-value" id="totalHours">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Efficiency (Docs/Hr)</span>
+            <span class="stat-value" id="efficiency">0</span>
           </div>
         </div>
       </div>
     </div>
 
-    <script>
-      // Pass server-side data to frontend script
-      window.dashboardData = <%- JSON.stringify(entries) %>;
-      window.queueOptions = <%- JSON.stringify(Objects.Queue) %>;
-    </script>
-    <script src="/js/dashboard-chart.js"></script>
-  </body>
+
+    <div class="bottom-row">
+      <!-- Bottom Row: Weekly Trend Chart -->
+      <div class="" style="width: 100%; flex: 1.2; min-width: 250px">
+        <div class="glass-panel">
+          <div class="panel-header" style="flex-direction: column; align-items: flex-start; gap: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <div>
+                <h3>Weekly Trends (Last 7 Days)</h3>
+              </div>
+              <div style="width: 100%; max-width: 300px;">
+                <label
+                  style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600; margin-bottom: 8px; display: block;">Filter
+                  by Queue:</label>
+                <select id="queueFilter"
+                  style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1.5px solid rgba(138, 114, 249, 0.25); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;">
+                  <option value="all">All Queues</option>
+                  <% Objects.Queue.forEach(function(q) { %>
+                    <option value="<%= q %>">
+                      <%= q %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style="position: relative; height: 350px; width: 100%">
+            <canvas id="weeklyChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Queue Performance Chart by Date -->
+      <div class="" style="width: 100%; flex: 1;">
+        <div class="glass-panel">
+          <div class="panel-header" style="flex-direction: column; align-items: flex-start; gap: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <h3>Queue Performance by Processor</h3>
+            </div>
+            <div style="display: flex; gap: 15px; width: 100%; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <label
+                  style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600; margin-bottom: 8px; display: block;">
+                  Select Date:
+                </label>
+                <input type="date" id="queueDateFilter"
+                  style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1.5px solid rgba(138, 114, 249, 0.25); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;" />
+              </div>
+              <div style="flex: 1; min-width: 200px;">
+                <label
+                  style="font-size: 0.85rem; color: var(--accent-purple); font-weight: 600; margin-bottom: 8px; display: block;">Select
+                  Queue:</label>
+                <select id="queuePerformanceFilter"
+                  style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1.5px solid rgba(138, 114, 249, 0.25); background: var(--input-bg); color: var(--text-color); font-size: 0.9rem;">
+                  <option value="">Select a queue</option>
+                  <% Objects.Queue.forEach(function(q) { %>
+                    <option value="<%= q %>">
+                      <%= q %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style="position: relative; height: 350px; width: 100%">
+            <canvas id="queuePerformanceChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Pass server-side data to frontend script
+    window.dashboardData = <%- JSON.stringify(entries) %>;
+    window.queueOptions = <%- JSON.stringify(Objects.Queue) %>;
+  </script>
+  <script src="/js/dashboard-chart.js"></script>
+</body>
+
 </html>
