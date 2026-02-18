@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- References ---
   const entriesContainer = document.getElementById("entriesContainer");
   const addRowBtn = document.getElementById("addRowBtn");
+  const nonProductiveContainer = document.getElementById("nonProductiveContainer");
   const totalCountEl = document.getElementById("totalCount");
   const totalTimeEl = document.getElementById("totalTime");
   const avgTimeEl = document.getElementById("avgTime");
@@ -67,6 +68,30 @@ document.addEventListener("DOMContentLoaded", () => {
     entriesContainer.appendChild(newRow);
   }
 
+  function createNewNonProductiveRow(clickedBtn) {
+    const firstNpRow = document.querySelector(".non-productive-row");
+    const newNpRow = firstNpRow.cloneNode(true);
+
+    // Reset values
+    newNpRow.querySelectorAll("input").forEach((input) => (input.value = ""));
+    newNpRow.querySelectorAll("select").forEach((select) => (select.selectedIndex = 0));
+
+    // Show remove button
+    newNpRow.querySelector(".btn-remove-np").style.visibility = "visible";
+
+    // Add event listeners for add button
+    newNpRow.querySelector(".btn-add-np").addEventListener("click", function() {
+      createNewNonProductiveRow(this);
+    });
+
+    // Add event listener for remove button
+    newNpRow.querySelector(".btn-remove-np").addEventListener("click", () => {
+      newNpRow.remove();
+    });
+
+    nonProductiveContainer.appendChild(newNpRow);
+  }
+
   // --- Init ---
 
   // Set default date to today
@@ -84,6 +109,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add Row Button
   addRowBtn.addEventListener("click", createNewRow);
 
+  // Setup initial non-productive row listeners
+  const initialNpRow = document.querySelector(".non-productive-row");
+  initialNpRow.querySelector(".btn-add-np").addEventListener("click", function() {
+    createNewNonProductiveRow(this);
+  });
+
   // Form Submission
   trackerForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -92,7 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const date = trackerForm.date.value;
     const dayType = trackerForm.dayType.value;
     const rows = [];
+    const nonProductiveRows = [];
 
+    // Collect productive entries
     document.querySelectorAll(".entry-row").forEach((row) => {
       rows.push({
         platform: row.querySelector(".platform-select").value,
@@ -103,11 +136,33 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // Collect non-productive entries
+    document.querySelectorAll(".non-productive-row").forEach((row) => {
+      const activityType = row.querySelector(".activity-select").value;
+      const duration = row.querySelector(".np-duration-input").value;
+      const comments = row.querySelector(".np-comments-input").value;
+      
+      // Only add if there's some data
+      if (activityType || duration || comments) {
+        nonProductiveRows.push({
+          activityType: activityType,
+          duration: duration,
+          comments: comments,
+        });
+      }
+    });
+
     try {
       const res = await fetch("/api/entry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, date, dayType, rows }),
+        body: JSON.stringify({ 
+          username, 
+          date, 
+          dayType, 
+          rows,
+          nonProductiveRows 
+        }),
       });
 
       const data = await res.json();

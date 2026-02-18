@@ -115,11 +115,24 @@ app.get("/dashboard", isAuthenticated, async (req, res) => {
 // Create Entry
 app.post("/api/entry", isAuthenticated, async (req, res) => {
   try {
-    const { date, dayType, rows, username } = req.body;
+    const { date, dayType, rows, username, nonProductiveRows } = req.body;
     const user = res.locals.user; // Get user from locals populated by middleware
 
     // If not admin, force username to be the logged-in user's username
     const entryUsername = user.isAdmin && username ? username : user.username;
+
+    // Check if entry already exists for this username and date
+    const existingEntry = await Entry.findOne({
+      username: entryUsername,
+      date: new Date(date),
+    });
+
+    if (existingEntry) {
+      return res.json({
+        success: false,
+        message: `Entry already exists for ${entryUsername} on ${new Date(date).toLocaleDateString()}. Please edit or delete the existing entry.`,
+      });
+    }
 
     const newEntry = new Entry({
       user: req.session.userId,
@@ -127,6 +140,7 @@ app.post("/api/entry", isAuthenticated, async (req, res) => {
       date,
       dayType,
       entries: rows,
+      nonProductiveEntries: nonProductiveRows || [],
     });
 
     await newEntry.save();
@@ -205,7 +219,7 @@ const exceljs = require("exceljs");
 app.get("/api/export-excel", isAuthenticated, async (req, res) => {
   try {
     const workbook = new exceljs.Workbook();
-    const worksheet = workbook.addWorksheet("Entries");
+    const worksheet = workbook.addWorksheet("Daily Tracker Data");
 
     worksheet.columns = [
       { header: "Username", key: "username", width: 20 },
@@ -216,6 +230,9 @@ app.get("/api/export-excel", isAuthenticated, async (req, res) => {
       { header: "Document Type", key: "docType", width: 20 },
       { header: "Count", key: "count", width: 10 },
       { header: "Time (mins)", key: "timeInMins", width: 15 },
+      { header: "Activity", key: "activity", width: 20 },
+      { header: "Duration (mins)", key: "duration", width: 15 },
+      { header: "Comments", key: "comments", width: 40 },
     ];
 
     let entries;
@@ -229,9 +246,11 @@ app.get("/api/export-excel", isAuthenticated, async (req, res) => {
 
     entries.forEach((entry) => {
       const entryDate = new Date(entry.date).toLocaleDateString();
+      
+      // Add productive entries
       entry.entries.forEach((row) => {
         worksheet.addRow({
-          username: entry.username, // Using the stored username
+          username: entry.username,
           date: entryDate,
           dayType: entry.dayType,
           platform: row.platform,
@@ -239,8 +258,30 @@ app.get("/api/export-excel", isAuthenticated, async (req, res) => {
           docType: row.docType,
           count: row.count,
           timeInMins: row.timeInMins,
+          activity: "",
+          duration: "",
+          comments: "",
         });
       });
+
+      // Add non-productive entries
+      if (entry.nonProductiveEntries && entry.nonProductiveEntries.length > 0) {
+        entry.nonProductiveEntries.forEach((npRow) => {
+          worksheet.addRow({
+            username: entry.username,
+            date: entryDate,
+            dayType: entry.dayType,
+            platform: "",
+            queue: "",
+            docType: "",
+            count: "",
+            timeInMins: "",
+            activity: npRow.activityType,
+            duration: npRow.duration,
+            comments: npRow.comments,
+          });
+        });
+      }
     });
 
     res.setHeader(

@@ -18,6 +18,13 @@ const entrySchema = new mongoose.Schema({
       timeInMins: Number,
     },
   ],
+  nonProductiveEntries: [
+    {
+      activityType: String,
+      duration: Number,
+      comments: String,
+    },
+  ],
   createdAt: { type: Date, default: Date.now },
 });
 

@@ -17,8 +17,9 @@
       <span>Welcome, <strong>
           <%= user.username %>
         </strong></span>
-        <a href="/auth/logout" class="btn-logout">Logout</a>
-      <a href="/dashboard" class="btn-secondary" style="margin-right: 10px; text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(138, 114, 249, 0.4);">Dashboard</a>
+      <a href="/auth/logout" class="btn-logout">Logout</a>
+      <a href="/dashboard" class="btn-secondary"
+        style="margin-right: 10px; text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 15px rgba(138, 114, 249, 0.4);">Dashboard</a>
 
     </div>
   </nav>
@@ -39,12 +40,13 @@
               <select name="username" required id="usernameSelect">
                 <option value="">Select User</option>
                 <% users.forEach(function(u) { %>
-                  <option value="<%= u.username %>" <%= u.username === user.username ? 'selected' : '' %>><%= u.username %></option>
-                <% }); %>
+                  <option value="<%= u.username %>" <%=u.username===user.username ? 'selected' : '' %>><%= u.username %>
+                  </option>
+                  <% }); %>
               </select>
-            <% } else { %>
-              <input type="text" name="username" class="readonly-input" value="<%= user.username %>" readonly />
-            <% } %>
+              <% } else { %>
+                <input type="text" name="username" class="readonly-input" value="<%= user.username %>" readonly />
+                <% } %>
           </div>
           <div class="input-group">
             <label>Date</label>
@@ -65,6 +67,7 @@
 
         <!-- ROW 2+: Dynamic Entries -->
         <div id="entriesContainer">
+          <div> Productive Time </div>
           <!-- Initial Row -->
           <div class="entry-row">
             <div class="input-group">
@@ -115,9 +118,44 @@
         </div>
 
         <div class="actions-row">
-          <button type="button" id="addRowBtn" class="btn-secondary">
-            + Add Row
-          </button>
+          <button type="button" id="addRowBtn" class="btn-secondary"> + Add Row </button>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Non-Productive Time Section -->
+        <div id="nonProductiveContainer">
+          <div style="margin-bottom: 15px; font-weight: 600; color: var(--accent-purple);">Non-Productive Time</div>
+          <!-- Initial Non-Productive Row -->
+          <div class="non-productive-row">
+            <div class="input-group">
+              <label>Activity Type</label>
+              <select name="activityType" class="activity-select">
+                <option value="" disabled selected>Select</option>
+                <option value="Meeting">Meeting</option>
+                <option value="Training">Training</option>
+                <option value="Break">Break</option>
+                <option value="Technical Issue">Technical Issue</option>
+                <option value="System Downtime">System Downtime</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Duration (mins)</label>
+              <input type="number" name="npDuration" class="np-duration-input" min="0" placeholder="0" />
+            </div>
+            <div class="input-group">
+              <label>Comments</label>
+              <input type="text" name="npComments" class="np-comments-input" placeholder="Enter details" />
+            </div>
+            <button type="button" class="btn-add-np" title="Add Row">+</button>
+            <button type="button" class="btn-remove-np" style="visibility: hidden" title="Remove Row">
+              &times;
+            </button>
+          </div>
+        </div>
+
+        <div class="actions-row" style="margin-top: 20px;">
           <button type="submit" class="btn-submit">Submit Entry</button>
         </div>
       </form>
@@ -166,7 +204,7 @@
   <script type="module" src="/js/script.js"></script>
 
   <script>
-    const Objects = <%- JSON.stringify(Objects) %>;
+    const Objects = <% - JSON.stringify(Objects) %>;
 
     const loadDocTypes = (queueValue) => {
       // const selectDocType = document.getElementById("doctypes");
